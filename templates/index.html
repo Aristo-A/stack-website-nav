@@ -1,0 +1,748 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Browser Navigation Simulator | Stack (LIFO) & 3 Approaches</title>
+    <meta name="description"
+        content="Interactive visualization of Web Browser Navigation history using Stack (LIFO) principles and 3 data structure approaches: Two Stacks, Doubly Linked List, and Dynamic Array.">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;700&family=Outfit:wght@500;600;700;800&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="/static/css/style.css">
+</head>
+
+<body>
+    <!-- App Container -->
+    <div class="app-container">
+
+        <!-- Header -->
+        <header class="app-header">
+            <div class="header-content">
+                <div class="logo-area">
+                    <div class="logo-badge" aria-hidden="true">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                            stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                            <polygon points="12 2 2 7 12 12 22 7 12 2"></polygon>
+                            <polyline points="2 17 12 22 22 17"></polyline>
+                            <polyline points="2 12 12 17 22 12"></polyline>
+                        </svg>
+                    </div>
+                    <div>
+                        <h1>Browser Navigation History Visualizer</h1>
+                        <p class="subtitle">Stack Data Structure &bull; <strong>LIFO (Last In, First Out)</strong>
+                            &bull; 3 Algorithmic Approaches</p>
+                    </div>
+                </div>
+
+                <div class="header-right-controls">
+                    <div class="header-badges">
+                        <span class="pill-badge pill-purple">
+                            <span class="dot"></span> LIFO Principle
+                        </span>
+                        <span class="pill-badge pill-blue">
+                            <span class="dot"></span> O(1) Operations
+                        </span>
+                        <span class="pill-badge pill-green">
+                            <span class="dot"></span> Live Sync
+                        </span>
+                    </div>
+
+                    <!-- Theme Toggle Switch -->
+                    <button id="theme-toggle" class="theme-toggle-btn" title="Toggle Light / Dark Mode"
+                        aria-label="Toggle theme">
+                        <svg class="sun-icon" width="18" height="18" viewBox="0 0 24 24" fill="none"
+                            stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <circle cx="12" cy="12" r="5"></circle>
+                            <line x1="12" y1="1" x2="12" y2="3"></line>
+                            <line x1="12" y1="21" x2="12" y2="23"></line>
+                            <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+                            <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+                            <line x1="1" y1="12" x2="3" y2="12"></line>
+                            <line x1="21" y1="12" x2="23" y2="12"></line>
+                            <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+                            <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+                        </svg>
+                        <svg class="moon-icon" width="18" height="18" viewBox="0 0 24 24" fill="none"
+                            stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+                        </svg>
+                        <span class="theme-toggle-text" id="theme-toggle-text">Dark</span>
+                    </button>
+                </div>
+            </div>
+        </header>
+
+        <!-- Main Controller & Mock Browser Toolbar -->
+        <section class="browser-frame-container" id="browser-view-section">
+            <div class="browser-window">
+                <!-- Browser Window Chrome -->
+                <div class="browser-titlebar">
+                    <div class="traffic-lights">
+                        <span class="tl-red"></span>
+                        <span class="tl-yellow"></span>
+                        <span class="tl-green"></span>
+                    </div>
+                    <div class="browser-tab active-tab">
+                        <span class="tab-icon">
+                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <circle cx="12" cy="12" r="10"></circle>
+                                <line x1="2" y1="12" x2="22" y2="12"></line>
+                                <path
+                                    d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z">
+                                </path>
+                            </svg>
+                        </span>
+                        <span class="tab-title" id="active-tab-title">Page A</span>
+                        <span class="tab-close">&times;</span>
+                    </div>
+                    <div class="tab-spacer"></div>
+                </div>
+
+                <!-- Browser Controls & URL Bar -->
+                <div class="browser-nav-bar">
+                    <div class="nav-buttons">
+                        <button id="btn-back" class="nav-btn"
+                            title="Go Back (Pop Back Stack, Push to Forward Stack)">
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                stroke-width="2.5">
+                                <path d="M19 12H5M12 19l-7-7 7-7" />
+                            </svg>
+                            <span class="btn-text">Back</span>
+                        </button>
+                        <button id="btn-forward" class="nav-btn"
+                            title="Go Forward (Pop Forward Stack, Push to Back Stack)">
+                            <span class="btn-text">Forward</span>
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                stroke-width="2.5">
+                                <path d="M5 12h14M12 5l7 7-7 7" />
+                            </svg>
+                        </button>
+                        <button id="btn-reload" class="nav-btn btn-icon-only" title="Peek Stacks State">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                stroke-width="2.5">
+                                <path d="M23 4v6h-6M1 20v-6h6M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15" />
+                            </svg>
+                        </button>
+                    </div>
+
+                    <div class="address-bar-wrapper">
+                        <span class="protocol-badge">https://</span>
+                        <input type="text" id="url-input" class="address-input"
+                            placeholder="Enter page name (e.g. Page E, Wikipedia, GitHub)" value="Page A">
+                        <button id="btn-visit" class="visit-btn" title="Visit Page (Clears Forward History!)">
+                            <span>Visit</span>
+                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                stroke-width="2.5">
+                                <path d="M5 12h14M12 5l7 7-7 7" />
+                            </svg>
+                        </button>
+                    </div>
+
+                    <div class="quick-tools">
+                        <button id="btn-reset" class="secondary-btn" title="Reset all history">
+                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                stroke-width="2">
+                                <path
+                                    d="M3 6h18M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2" />
+                            </svg>
+                            <span>Reset</span>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Quick Preset URL Pills -->
+                <div class="preset-pills-row">
+                    <span class="pills-label">Quick Visit:</span>
+                    <button class="pill-chip" data-page="Page A">Page A</button>
+                    <button class="pill-chip" data-page="Page B">Page B</button>
+                    <button class="pill-chip" data-page="Page C">Page C</button>
+                    <button class="pill-chip" data-page="Page D">Page D</button>
+                    <button class="pill-chip" data-page="Page E">Page E</button>
+                    <button class="pill-chip" data-page="google.com">google.com</button>
+                    <button class="pill-chip" data-page="github.com">github.com</button>
+                    <button class="pill-chip" data-page="wikipedia.org">wikipedia.org</button>
+                </div>
+
+                <!-- Active Page Screen Display -->
+                <div class="browser-viewport">
+                    <div class="active-page-hero">
+                        <div class="page-visual-card">
+                            <div class="page-letter-circle" id="current-page-badge">A</div>
+                            <div class="page-meta">
+                                <span class="tag-label">CURRENT ACTIVE PAGE</span>
+                                <h2 class="page-title" id="current-page-title">Page A</h2>
+                                <p class="page-desc" id="current-page-desc">This is the webpage currently loaded in the viewport.</p>
+                            </div>
+                        </div>
+
+                        <div class="operation-status-banner" id="operation-banner">
+                            <div class="op-indicator">
+                                <span class="pulse-dot"></span>
+                                <span class="op-type" id="last-op-type">INITIALIZED</span>
+                            </div>
+                            <p class="op-detail" id="last-op-detail">System ready. Click demo or visit pages to inspect stack actions.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Canonical Demo Player Banner -->
+        <section class="demo-controller-card">
+            <div class="demo-header-flex">
+                <div class="demo-title-group">
+                    <span class="demo-badge">PROBLEM STATEMENT WALKTHROUGH</span>
+                    <h3>Canonical Sequence: <code>A &rarr; B &rarr; C &rarr; D &rarr; Back &rarr; Back &rarr; E</code></h3>
+                    <p>Observe how visiting new page <strong>E</strong> after 2 Back operations permanently clears the Forward stack.</p>
+                </div>
+
+                <div class="demo-actions">
+                    <button id="btn-demo-prev" class="demo-btn secondary" title="Previous Step">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                            stroke-width="2.5">
+                            <path d="M19 12H5M12 19l-7-7 7-7" />
+                        </svg>
+                        <span>Prev Step</span>
+                    </button>
+                    <button id="btn-demo-next" class="demo-btn primary" title="Next Step in Canonical Sequence">
+                        <span>Next Step</span>
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                            stroke-width="2.5">
+                            <path d="M5 12h14M12 5l7 7-7 7" />
+                        </svg>
+                    </button>
+                    <button id="btn-demo-autoplay" class="demo-btn accent" title="Auto-play walkthrough">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                            <polygon points="5 3 19 12 5 21 5 3" />
+                        </svg>
+                        <span id="autoplay-text">Auto Play</span>
+                    </button>
+                    <button id="btn-demo-reset" class="demo-btn secondary" title="Reset Walkthrough">
+                        <span>Restart</span>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Demo Stepper Progress Bar -->
+            <div class="stepper-track" id="stepper-track">
+                <!-- Dynamically generated stepper items -->
+            </div>
+            <div class="current-step-callout" id="current-step-callout">
+                <span class="step-num-pill" id="step-num-pill">Step 0/7</span>
+                <span class="step-desc-text" id="step-desc-text">Click "Next Step" or "Auto Play" to begin the canonical demonstration.</span>
+            </div>
+        </section>
+
+        <!-- View Mode Switcher (Zero Emojis - Semantic SVG Icons) -->
+        <div class="view-mode-tabs">
+            <div class="tab-group">
+                <button class="view-tab active" data-view="all" id="tab-btn-all">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <rect x="3" y="3" width="7" height="7"></rect>
+                        <rect x="14" y="3" width="7" height="7"></rect>
+                        <rect x="14" y="14" width="7" height="7"></rect>
+                        <rect x="3" y="14" width="7" height="7"></rect>
+                    </svg>
+                    <span>All 3 Approaches (Side-by-Side)</span>
+                </button>
+                <button class="view-tab" data-view="two-stacks" id="tab-btn-stacks">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <polygon points="12 2 2 7 12 12 22 7 12 2"></polygon>
+                        <polyline points="2 17 12 22 22 17"></polyline>
+                        <polyline points="2 12 12 17 22 12"></polyline>
+                    </svg>
+                    <span>1. Two Stacks (LIFO Focus)</span>
+                </button>
+                <button class="view-tab" data-view="linked-list" id="tab-btn-dll">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path>
+                        <path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path>
+                    </svg>
+                    <span>2. Doubly Linked List</span>
+                </button>
+                <button class="view-tab" data-view="dynamic-array" id="tab-btn-array">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <line x1="18" y1="20" x2="18" y2="10"></line>
+                        <line x1="12" y1="20" x2="12" y2="4"></line>
+                        <line x1="6" y1="20" x2="6" y2="14"></line>
+                    </svg>
+                    <span>3. Dynamic Array</span>
+                </button>
+            </div>
+        </div>
+
+        <!-- ============================================================== -->
+        <!-- WEBSITES HISTORY CAROUSEL (Prevents webpage size inflation)     -->
+        <!-- ============================================================== -->
+        <section class="websites-carousel-section" id="websites-carousel-section">
+            <div class="carousel-bar-header">
+                <div class="carousel-title-group">
+                    <div class="carousel-badge-icon">
+                        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <rect x="2" y="3" width="20" height="14" rx="2" ry="2"></rect>
+                            <line x1="8" y1="21" x2="16" y2="21"></line>
+                            <line x1="12" y1="17" x2="12" y2="21"></line>
+                        </svg>
+                    </div>
+                    <div>
+                        <h4 class="carousel-bar-title">Website History Carousel</h4>
+                        <p class="carousel-bar-subtitle">Horizontal carousel preserves clean page layout as website count increases</p>
+                    </div>
+                    <span class="carousel-count-badge" id="carousel-count-badge">1 Page</span>
+                </div>
+
+                <div class="carousel-nav-controls">
+                    <button id="carousel-btn-prev" class="carousel-arrow-btn" title="Slide Left" aria-label="Previous websites">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                            <path d="M15 18l-6-6 6-6" />
+                        </svg>
+                    </button>
+                    <span class="carousel-page-indicator" id="carousel-page-indicator">1 / 1</span>
+                    <button id="carousel-btn-next" class="carousel-arrow-btn" title="Slide Right" aria-label="Next websites">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                            <path d="M9 18l6-6-6-6" />
+                        </svg>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Carousel Viewport with Scroll Snap -->
+            <div class="carousel-viewport" id="carousel-viewport">
+                <div class="carousel-track" id="carousel-track">
+                    <!-- Dynamic website tabs rendered by JS -->
+                </div>
+            </div>
+        </section>
+
+        <!-- VISUALIZATION CANVAS (3 Approaches) -->
+        <main class="visualizer-grid" id="visualizer-grid">
+
+            <!-- ============================================================== -->
+            <!-- APPROACH 1: TWO STACKS (Back Stack + Forward Stack) -->
+            <!-- ============================================================== -->
+            <section class="approach-card card-two-stacks" id="panel-two-stacks">
+                <div class="card-header">
+                    <div class="card-title-wrap">
+                        <span class="approach-number">01</span>
+                        <div>
+                            <h3>Two Stacks Approach</h3>
+                            <p class="tagline">Classic Browser LIFO Implementation</p>
+                        </div>
+                    </div>
+                    <div class="complexity-pill">
+                        <span class="t-badge">Time: O(1)</span>
+                        <span class="s-badge">Space: O(N)</span>
+                    </div>
+                </div>
+
+                <div class="concept-callout">
+                    <div class="concept-icon-wrap" aria-hidden="true">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M9 18h6"></path>
+                            <path d="M10 22h4"></path>
+                            <path d="M15.09 14c.18-.98.65-1.74 1.41-2.5A4.65 4.65 0 0 0 18 8 6 6 0 0 0 6 8c0 1 .23 2.23 1.5 3.5.76.76 1.23 1.52 1.41 2.5"></path>
+                        </svg>
+                    </div>
+                    <p>Uses <strong>Back Stack</strong> and <strong>Forward Stack</strong>. Visiting a page pushes current to Back and <strong class="text-rose">clears Forward Stack</strong>. Back pops from Back and pushes to Forward.</p>
+                </div>
+
+                <!-- Visual Stack Containers (Unified 270px locked height) -->
+                <div class="stacks-unified-container">
+                    <!-- Top Active Page Bridge Header -->
+                    <div class="stack-bridge-header">
+                        <div class="bridge-flow bridge-flow-back" title="Back button pops from Back Stack to Current">
+                            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
+                            <span>Back Pop</span>
+                        </div>
+                        <div class="bridge-current-capsule">
+                            <span class="capsule-label">ACTIVE</span>
+                            <span class="capsule-value" id="stacks-current-page">None</span>
+                        </div>
+                        <div class="bridge-flow bridge-flow-forward" title="Forward button pops from Forward Stack to Current">
+                            <span>Forward Pop</span>
+                            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+                        </div>
+                    </div>
+
+                    <!-- Visual Stacks (2-Column Grid: Back Stack & Forward Stack) -->
+                    <div class="stacks-layout">
+                        <!-- Back Stack -->
+                        <div class="stack-box back-stack-box">
+                            <div class="stack-box-header">
+                                <div class="stack-label">
+                                    <span class="stack-indicator back-indicator"></span>
+                                    <h4>Back Stack</h4>
+                                </div>
+                                <span class="stack-count-badge" id="back-stack-count">0 items</span>
+                            </div>
+                            <div class="stack-shelf-container" id="back-stack-container">
+                                <!-- Items populated by JS -->
+                                <div class="stack-empty-msg">Back Stack is Empty</div>
+                            </div>
+                            <div class="stack-base">
+                                <span>BOTTOM (Oldest History)</span>
+                            </div>
+                            <div class="stack-action-footer">
+                                <span class="footer-op" id="back-stack-op">LIFO Pop target</span>
+                            </div>
+                        </div>
+
+                        <!-- Forward Stack -->
+                        <div class="stack-box forward-stack-box">
+                            <div class="stack-box-header">
+                                <div class="stack-label">
+                                    <span class="stack-indicator forward-indicator"></span>
+                                    <h4>Forward Stack</h4>
+                                </div>
+                                <span class="stack-count-badge" id="forward-stack-count">0 items</span>
+                            </div>
+                            <div class="stack-shelf-container" id="forward-stack-container">
+                                <!-- Items populated by JS -->
+                                <div class="stack-empty-msg">Forward Stack is Empty</div>
+                            </div>
+                            <div class="stack-base">
+                                <span>BOTTOM (Most Recent)</span>
+                            </div>
+                            <div class="stack-action-footer">
+                                <span class="footer-op text-rose" id="forward-stack-op">Clears on new visit</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Operation Detail Box -->
+                <div class="approach-footer-stats">
+                    <div class="stat-item">
+                        <span class="lbl">Last Stack Op:</span>
+                        <code class="val" id="stacks-last-op">None</code>
+                    </div>
+                    <div class="stat-item">
+                        <span class="lbl">Peek Back:</span>
+                        <code class="val" id="stacks-peek-back">None</code>
+                    </div>
+                    <div class="stat-item">
+                        <span class="lbl">Peek Forward:</span>
+                        <code class="val" id="stacks-peek-forward">None</code>
+                    </div>
+                </div>
+            </section>
+
+            <!-- ============================================================== -->
+            <!-- APPROACH 2: DOUBLY LINKED LIST + POINTER (Carousel Slider) -->
+            <!-- ============================================================== -->
+            <section class="approach-card card-linked-list" id="panel-linked-list">
+                <div class="card-header">
+                    <div class="card-title-wrap">
+                        <span class="approach-number">02</span>
+                        <div>
+                            <h3>Doubly Linked List + Pointer</h3>
+                            <p class="tagline">Bidirectional Node Chaining</p>
+                        </div>
+                    </div>
+                    <div class="complexity-pill">
+                        <span class="t-badge">Time: O(1)</span>
+                        <span class="s-badge">Space: O(N)</span>
+                    </div>
+                </div>
+
+                <div class="concept-callout">
+                    <div class="concept-icon-wrap" aria-hidden="true">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M9 18h6"></path>
+                            <path d="M10 22h4"></path>
+                            <path d="M15.09 14c.18-.98.65-1.74 1.41-2.5A4.65 4.65 0 0 0 18 8 6 6 0 0 0 6 8c0 1 .23 2.23 1.5 3.5.76.76 1.23 1.52 1.41 2.5"></path>
+                        </svg>
+                    </div>
+                    <p>Each page is a <strong>Node</strong> with <code>prev</code> and <code>next</code> pointers. A pointer points to the active page. Visiting a new page <strong>severs all nodes after current</strong>.</p>
+                </div>
+
+                <!-- DLL Carousel Wrapper with Slider Controls -->
+                <div class="dll-chain-wrapper">
+                    <button class="chain-carousel-btn left" id="dll-scroll-left" title="Scroll Left" aria-label="Scroll DLL left">
+                        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M15 18l-6-6 6-6"/></svg>
+                    </button>
+                    <div class="dll-chain-scroll" id="dll-nodes-container">
+                        <!-- Populated by JS -->
+                        <div class="dll-empty-msg">List is empty</div>
+                    </div>
+                    <button class="chain-carousel-btn right" id="dll-scroll-right" title="Scroll Right" aria-label="Scroll DLL right">
+                        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M9 18l6-6-6-6"/></svg>
+                    </button>
+                </div>
+
+                <!-- DLL Legend -->
+                <div class="dll-legend">
+                    <div class="legend-item"><span class="legend-color legend-head"></span> Head (First Visited)</div>
+                    <div class="legend-item"><span class="legend-color legend-curr"></span> Current Pointer (Active)</div>
+                    <div class="legend-item"><span class="legend-color legend-severed"></span> Severed on New Visit</div>
+                </div>
+
+                <!-- DLL Stats -->
+                <div class="approach-footer-stats">
+                    <div class="stat-item">
+                        <span class="lbl">Current Pointer:</span>
+                        <code class="val" id="dll-current-pointer">None</code>
+                    </div>
+                    <div class="stat-item">
+                        <span class="lbl">Prev Node:</span>
+                        <code class="val" id="dll-prev-node">None</code>
+                    </div>
+                    <div class="stat-item">
+                        <span class="lbl">Next Node:</span>
+                        <code class="val" id="dll-next-node">None</code>
+                    </div>
+                </div>
+            </section>
+
+            <!-- ============================================================== -->
+            <!-- APPROACH 3: SINGLE DYNAMIC ARRAY + INDEX POINTER (Carousel) -->
+            <!-- ============================================================== -->
+            <section class="approach-card card-dynamic-array" id="panel-dynamic-array">
+                <div class="card-header">
+                    <div class="card-title-wrap">
+                        <span class="approach-number">03</span>
+                        <div>
+                            <h3>Single Dynamic Array</h3>
+                            <p class="tagline">Array History + Index Pointer</p>
+                        </div>
+                    </div>
+                    <div class="complexity-pill">
+                        <span class="t-badge">Time: O(1) / O(K) slice</span>
+                        <span class="s-badge">Space: O(N)</span>
+                    </div>
+                </div>
+
+                <div class="concept-callout">
+                    <div class="concept-icon-wrap" aria-hidden="true">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M9 18h6"></path>
+                            <path d="M10 22h4"></path>
+                            <path d="M15.09 14c.18-.98.65-1.74 1.41-2.5A4.65 4.65 0 0 0 18 8 6 6 0 0 0 6 8c0 1 .23 2.23 1.5 3.5.76.76 1.23 1.52 1.41 2.5"></path>
+                        </svg>
+                    </div>
+                    <p>All pages stored in a contiguous array. <code>current_index</code> points to active page. Back/Forward decrements/increments index. Visiting new page <strong>slices/truncates forward elements</strong>.</p>
+                </div>
+
+                <!-- Dynamic Array Visual Container with Slider Controls -->
+                <div class="array-visual-wrapper">
+                    <button class="chain-carousel-btn left" id="array-scroll-left" title="Scroll Left" aria-label="Scroll array left">
+                        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M15 18l-6-6 6-6"/></svg>
+                    </button>
+                    <div class="array-cells-track" id="array-cells-container">
+                        <!-- Cells populated by JS -->
+                        <div class="array-empty-msg">Array is empty</div>
+                    </div>
+                    <button class="chain-carousel-btn right" id="array-scroll-right" title="Scroll Right" aria-label="Scroll array right">
+                        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M9 18l6-6-6-6"/></svg>
+                    </button>
+                </div>
+
+                <!-- Array Stats -->
+                <div class="approach-footer-stats">
+                    <div class="stat-item">
+                        <span class="lbl">Array Length:</span>
+                        <code class="val" id="array-length">0</code>
+                    </div>
+                    <div class="stat-item">
+                        <span class="lbl">Current Index:</span>
+                        <code class="val" id="array-current-index">-1</code>
+                    </div>
+                    <div class="stat-item">
+                        <span class="lbl">Slice on Visit:</span>
+                        <code class="val" id="array-slice-info">history[:index+1]</code>
+                    </div>
+                </div>
+            </section>
+        </main>
+
+        <!-- Comparison Table Section (From User Specification) -->
+        <section class="comparison-section" id="comparison-table-section">
+            <div class="section-title-wrap">
+                <span class="section-badge">DEEP DIVE COMPARISON</span>
+                <h2>Comprehensive Algorithmic Comparison</h2>
+                <p>Evaluation of the 3 approaches across time complexity, memory allocation, and real-world engine behavior.</p>
+            </div>
+
+            <div class="table-card">
+                <table class="comparison-table">
+                    <thead>
+                        <tr>
+                            <th>Approach</th>
+                            <th>Data Structure</th>
+                            <th>Time Complexity</th>
+                            <th>Space Complexity</th>
+                            <th>Forward History Clearing Mechanism</th>
+                            <th>Best For</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr class="highlight-row">
+                            <td>
+                                <div class="table-approach-name">
+                                    <span class="dot-indicator dot-purple"></span>
+                                    <strong>1. Two Stacks</strong>
+                                </div>
+                            </td>
+                            <td><code>Array/List stacks</code> (Back &amp; Forward)</td>
+                            <td><span class="badge-complexity">O(1)</span> operations (Push, Pop, Peek)</td>
+                            <td><span class="badge-space">O(N)</span></td>
+                            <td>Instant <code>forward_stack.clear()</code> in O(1) / O(K)</td>
+                            <td><strong class="text-accent">Simplest LIFO implementation &amp; pedagogical clarity</strong></td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <div class="table-approach-name">
+                                    <span class="dot-indicator dot-blue"></span>
+                                    <strong>2. Doubly Linked List</strong>
+                                </div>
+                            </td>
+                            <td><code>Doubly Linked List + Pointer</code></td>
+                            <td><span class="badge-complexity">O(1)</span> node insertion &amp; traversal</td>
+                            <td><span class="badge-space">O(N)</span> (extra pointer overhead)</td>
+                            <td>Sever <code>current.next = None</code> (garbage collector reclaims disconnected branch)</td>
+                            <td><strong class="text-accent">True infinite scaling without moving memory indices</strong></td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <div class="table-approach-name">
+                                    <span class="dot-indicator dot-green"></span>
+                                    <strong>3. Single Dynamic Array</strong>
+                                </div>
+                            </td>
+                            <td><code>Array + Index pointer</code></td>
+                            <td><span class="badge-complexity">O(1)</span> lookup/move, <span class="badge-complexity">O(K)</span> slice on visit</td>
+                            <td><span class="badge-space">O(N)</span> (contiguous memory)</td>
+                            <td>Slice array up to current index <code>history = history[:index + 1]</code></td>
+                            <td><strong class="text-accent">Minimal pointer overhead, cache locality, direct index access</strong></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
+        <!-- Operation Timeline & Python Code Inspection -->
+        <section class="details-split-grid">
+            <!-- Live Event Timeline -->
+            <div class="timeline-card">
+                <div class="card-header-clean">
+                    <div class="title-with-icon">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 14 14"/></svg>
+                        <h3>Live Operation Execution Log</h3>
+                    </div>
+                    <button id="btn-clear-log" class="text-btn">Clear Log</button>
+                </div>
+                <div class="timeline-stream" id="timeline-stream">
+                    <!-- Populated by JS -->
+                </div>
+            </div>
+
+            <!-- Algorithm & Code Inspector -->
+            <div class="code-inspector-card">
+                <div class="card-header-clean">
+                    <div class="title-with-icon">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg>
+                        <h3>Python Backend Logic Inspector</h3>
+                    </div>
+                    <div class="code-tabs">
+                        <button class="code-tab active" data-tab="stacks-code">Two Stacks</button>
+                        <button class="code-tab" data-tab="dll-code">Doubly Linked List</button>
+                        <button class="code-tab" data-tab="array-code">Dynamic Array</button>
+                    </div>
+                </div>
+
+                <div class="code-content-block">
+                    <!-- Two Stacks Code -->
+                    <pre class="code-panel active" id="code-stacks-code"><code><span class="keyword">class</span> <span class="class-name">TwoStacksBrowser</span>:
+    <span class="keyword">def</span> <span class="func">__init__</span>(<span class="param">self</span>):
+        <span class="param">self</span>.back_stack = []
+        <span class="param">self</span>.forward_stack = []
+        <span class="param">self</span>.current_page = <span class="keyword">None</span>
+
+    <span class="keyword">def</span> <span class="func">visit</span>(<span class="param">self</span>, url):
+        <span class="comment"># 1. Push current page to back_stack</span>
+        <span class="keyword">if</span> <span class="param">self</span>.current_page:
+            <span class="param">self</span>.back_stack.append(<span class="param">self</span>.current_page)
+        <span class="comment"># 2. Update current page</span>
+        <span class="param">self</span>.current_page = url
+        <span class="comment"># 3. LIFO RULE: Visiting a new page CLEARS forward history!</span>
+        <span class="param">self</span>.forward_stack.clear()
+
+    <span class="keyword">def</span> <span class="func">back</span>(<span class="param">self</span>):
+        <span class="keyword">if</span> <span class="keyword">not</span> <span class="param">self</span>.back_stack:
+            <span class="keyword">return</span> <span class="keyword">False</span>
+        <span class="comment"># Push current to forward stack</span>
+        <span class="param">self</span>.forward_stack.append(<span class="param">self</span>.current_page)
+        <span class="comment"># Pop previous page from back stack</span>
+        <span class="param">self</span>.current_page = <span class="param">self</span>.back_stack.pop()
+
+    <span class="keyword">def</span> <span class="func">forward</span>(<span class="param">self</span>):
+        <span class="keyword">if</span> <span class="keyword">not</span> <span class="param">self</span>.forward_stack:
+            <span class="keyword">return</span> <span class="keyword">False</span>
+        <span class="param">self</span>.back_stack.append(<span class="param">self</span>.current_page)
+        <span class="param">self</span>.current_page = <span class="param">self</span>.forward_stack.pop()</code></pre>
+
+                    <!-- Doubly Linked List Code -->
+                    <pre class="code-panel" id="code-dll-code"><code><span class="keyword">class</span> <span class="class-name">DLLNode</span>:
+    <span class="keyword">def</span> <span class="func">__init__</span>(<span class="param">self</span>, url):
+        <span class="param">self</span>.url = url
+        <span class="param">self</span>.prev = <span class="keyword">None</span>
+        <span class="param">self</span>.next = <span class="keyword">None</span>
+
+<span class="keyword">class</span> <span class="class-name">DoublyLinkedListBrowser</span>:
+    <span class="keyword">def</span> <span class="func">visit</span>(<span class="param">self</span>, url):
+        new_node = DLLNode(url)
+        <span class="keyword">if</span> <span class="param">self</span>.current_node:
+            <span class="comment"># Sever forward chain</span>
+            <span class="param">self</span>.current_node.next = new_node
+            new_node.prev = <span class="param">self</span>.current_node
+        <span class="param">self</span>.current_node = new_node
+
+    <span class="keyword">def</span> <span class="func">back</span>(<span class="param">self</span>):
+        <span class="keyword">if</span> <span class="param">self</span>.current_node <span class="keyword">and</span> <span class="param">self</span>.current_node.prev:
+            <span class="param">self</span>.current_node = <span class="param">self</span>.current_node.prev
+
+    <span class="keyword">def</span> <span class="func">forward</span>(<span class="param">self</span>):
+        <span class="keyword">if</span> <span class="param">self</span>.current_node <span class="keyword">and</span> <span class="param">self</span>.current_node.next:
+            <span class="param">self</span>.current_node = <span class="param">self</span>.current_node.next</code></pre>
+
+                    <!-- Dynamic Array Code -->
+                    <pre class="code-panel" id="code-array-code"><code><span class="keyword">class</span> <span class="class-name">ArrayBrowser</span>:
+    <span class="keyword">def</span> <span class="func">__init__</span>(<span class="param">self</span>):
+        <span class="param">self</span>.history = []
+        <span class="param">self</span>.current_index = -1
+
+    <span class="keyword">def</span> <span class="func">visit</span>(<span class="param">self</span>, url):
+        <span class="comment"># Slice array up to current index (discards forward)</span>
+        <span class="keyword">if</span> <span class="param">self</span>.current_index >= 0:
+            <span class="param">self</span>.history = <span class="param">self</span>.history[:<span class="param">self</span>.current_index + 1]
+        <span class="param">self</span>.history.append(url)
+        <span class="param">self</span>.current_index = len(<span class="param">self</span>.history) - 1
+
+    <span class="keyword">def</span> <span class="func">back</span>(<span class="param">self</span>):
+        <span class="keyword">if</span> <span class="param">self</span>.current_index > 0:
+            <span class="param">self</span>.current_index -= 1
+
+    <span class="keyword">def</span> <span class="func">forward</span>(<span class="param">self</span>):
+        <span class="keyword">if</span> <span class="param">self</span>.current_index < len(<span class="param">self</span>.history) - 1:
+            <span class="param">self</span>.current_index += 1</code></pre>
+                </div>
+            </div>
+        </section>
+
+        <!-- Footer -->
+        <footer class="app-footer">
+            <p>Browser Navigation Simulator &bull; Data Structures &amp; Algorithms &bull; Stack (LIFO)</p>
+            <p class="footer-sub">Flask Server &bull; Responsive Light &amp; Dark Theme Visualizer</p>
+        </footer>
+    </div>
+
+    <!-- Scripts -->
+    <script src="/static/js/app.js"></script>
+</body>
+
+</html>

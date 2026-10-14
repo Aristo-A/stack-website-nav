@@ -1,4 +1,4 @@
-# Web Browser Navigation Simulator & Visualizer
+# stack-website-nav
 
 A modern, interactive computer science visualizer and educational engine demonstrating **Web Browser History Navigation** using the **Stack (LIFO - Last In, First Out)** data structure alongside **3 distinct architectural approaches**.
 
@@ -129,7 +129,7 @@ The web interface is engineered with a developer-grade design system:
 ## 5. Project Structure
 
 ```
-browser navigation/
+stack-website-nav/
 │
 ├── browser_engine.py      # Core data structures (TwoStacksBrowser, DoublyLinkedListBrowser, ArrayBrowser, Coordinator)
 ├── main.py                # Flask server, REST APIs, and CLI demo runner
@@ -157,9 +157,10 @@ browser navigation/
 
 ### Installation
 
-1. **Clone or navigate to the repository**:
+1. **Clone the repository**:
    ```bash
-   cd "browser navigation"
+   git clone https://github.com/Aristo-A/stack-website-nav.git
+   cd stack-website-nav
    ```
 
 2. **(Optional) Create and activate a virtual environment**:

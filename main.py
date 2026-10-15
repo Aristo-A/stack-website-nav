@@ -11,8 +11,13 @@ Supports both Web Visualizer (Flask server) and CLI demo.
 
 import sys
 import argparse
+import mimetypes
 from flask import Flask, render_template, jsonify, request
 from browser_engine import BrowserNavigationCoordinator
+
+# Fix Windows Registry issue where .css MIME type is mistakenly set to 'text/plain'
+mimetypes.add_type('text/css', '.css')
+mimetypes.add_type('application/javascript', '.js')
 
 app = Flask(__name__)
 app.config['TEMPLATES_AUTO_RELOAD'] = True
